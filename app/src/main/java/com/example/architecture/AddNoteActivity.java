@@ -14,6 +14,8 @@ import android.widget.Toast;
 
 public class AddNoteActivity extends AppCompatActivity {
 
+    public static final String EXTRA_ID =
+            "com.example.architecture.EXTRA_ID";
     public static final String EXTRA_TITLE =
             "com.example.architecture.EXTRA_TITLE";
     public static final String EXTRA_DES =
@@ -37,7 +39,17 @@ public class AddNoteActivity extends AppCompatActivity {
         numberPickerPriority.setMinValue(1);
 
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_cancel_black_24dp);
-        setTitle("Add Note");
+
+        Intent intent = getIntent();
+
+        if (intent.hasExtra(EXTRA_ID)){
+            setTitle("EDIT NOTE");
+            editTextTitle.setText(intent.getStringExtra(EXTRA_TITLE));
+            editTextDescription.setText(intent.getStringExtra(EXTRA_DES));
+            numberPickerPriority.setValue(intent.getIntExtra(EXTRA_PRIORITY, 1));
+        }else {
+            setTitle("ADD NOTE");
+        }
     }
 
     private void saveNote(){
@@ -54,6 +66,11 @@ public class AddNoteActivity extends AppCompatActivity {
         data.putExtra(EXTRA_TITLE, title);
         data.putExtra(EXTRA_DES,des);
         data.putExtra(EXTRA_PRIORITY, priority);
+
+        int id = getIntent().getIntExtra(EXTRA_ID, -1);
+        if (id != -1){
+            data.putExtra(EXTRA_ID, id);
+        }
 
         setResult(RESULT_OK, data);
         finish();
